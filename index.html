@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanzasPro | Gestión Inteligente</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <div class="bg-gradient-primary rounded-3 p-2 me-2 d-inline-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <i class="bi bi-bank2 text-white"></i>
+                </div>
+                <span class="text-gradient">FinanzasPro</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center" id="nav-content">
+                    <!-- Dinámico -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <!-- Alert Box -->
+        <div id="alert-box" class="alert d-none fixed-top mx-auto mt-4 shadow" style="max-width: 500px; z-index: 2000;"></div>
+
+        <!-- AUTH VIEW -->
+        <div id="view-auth" class="view-section active-view">
+            <div class="row justify-content-center align-items-center min-vh-75">
+                <div class="col-md-6 col-lg-5">
+                    <div class="login-container shadow-lg">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Bienvenido</h2>
+                            <p class="text-muted">Gestiona tus finanzas de forma profesional</p>
+                        </div>
+                        
+                        <ul class="nav nav-pills mb-4 justify-content-center bg-light p-1 rounded-pill" id="pills-tab">
+                            <li class="nav-item w-50">
+                                <button class="nav-link active rounded-pill w-100" onclick="switchAuth('login')">Ingresar</button>
+                            </li>
+                            <li class="nav-item w-50">
+                                <button class="nav-link rounded-pill w-100" onclick="switchAuth('register')">Registrarse</button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Login Form -->
+                        <form id="form-login">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nombre de Usuario</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-person text-muted"></i></span>
+                                    <input type="text" id="login-user" class="form-control border-start-0" required placeholder="admin o usuario">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Contraseña</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                                    <input type="password" id="login-pass" class="form-control border-start-0" required placeholder="••••••••">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-3 mb-3 shadow">Entrar al Sistema</button>
+                            <div class="text-center small text-muted">
+                                Admin: <strong>admin / 123</strong> | Demo: <strong>demo / 123</strong>
+                            </div>
+                        </form>
+
+                        <!-- Register Form -->
+                        <form id="form-register" class="d-none">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nombre Completo</label>
+                                <input type="text" id="reg-name" class="form-control" required placeholder="Juan Pérez">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Usuario (Único)</label>
+                                <input type="text" id="reg-user" class="form-control" required placeholder="juanp">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Contraseña</label>
+                                <input type="password" id="reg-pass" class="form-control" required placeholder="••••••••">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Presupuesto Mensual Inicial</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" id="reg-budget" class="form-control" required value="1000">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-3 shadow">Crear mi Cuenta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USER DASHBOARD VIEW -->
+        <div id="view-user" class="view-section">
+            <div class="row g-4 mb-4">
+                <!-- Summary Cards -->
+                <div class="col-md-4">
+                    <div class="card-custom bg-gradient-primary p-4 h-100 position-relative border-0">
+                        <div class="position-absolute top-0 end-0 p-4 opacity-25">
+                            <i class="bi bi-wallet2 display-4"></i>
+                        </div>
+                        <p class="mb-1 opacity-75">Balance General</p>
+                        <h2 class="display-6 fw-bold mb-0" id="u-balance">$0.00</h2>
+                        <div class="mt-3 small" id="balance-trend">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-custom bg-white p-4 h-100 border-start border-4 border-success">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-muted mb-1">Ingresos de Mes</p>
+                                <h3 class="fw-bold text-success mb-0" id="u-income">$0.00</h3>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-2 rounded-3">
+                                <i class="bi bi-arrow-up-circle text-success fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-custom bg-white p-4 h-100 border-start border-4 border-danger">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="text-muted mb-1">Gastos de Mes</p>
+                                <h3 class="fw-bold text-danger mb-0" id="u-expense">$0.00</h3>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 p-2 rounded-3">
+                                <i class="bi bi-arrow-down-circle text-danger fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Left Column: Budget & Stats -->
+                <div class="col-lg-4">
+                    <!-- Budget Tracker -->
+                    <div class="card-custom p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0">Presupuesto</h5>
+                            <button class="btn btn-sm btn-outline-primary border-0" onclick="showBudgetModal()"><i class="bi bi-pencil"></i></button>
+                        </div>
+                        <div class="mb-2 d-flex justify-content-between">
+                            <span class="text-muted small" id="budget-text">Gastado: $0 / Presupuesto: $0</span>
+                            <span class="fw-bold small" id="budget-percentage">0%</span>
+                        </div>
+                        <div class="progress mb-2" style="height: 12px;">
+                            <div id="budget-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p id="budget-msg" class="small mb-0"></p>
+                    </div>
+
+                    <!-- Categories Stats -->
+                    <div class="card-custom p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0">Mis Categorías</h5>
+                            <button class="btn btn-sm btn-outline-primary border-0" onclick="showCategoryModal()"><i class="bi bi-gear"></i></button>
+                        </div>
+                        <div id="categories-summary">
+                            <!-- JS inyectará aquí los gastos por categoría -->
+                        </div>
+                        <div style="height: 200px;">
+                            <canvas id="userChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Movements -->
+                <div class="col-lg-8">
+                    <div class="card-custom p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold m-0">Movimientos Recientes</h5>
+                            <div class="d-flex gap-2">
+                                <select id="filter-cat" class="form-select form-select-sm" onchange="renderUserDashboard()">
+                                    <option value="all">Todas</option>
+                                </select>
+                                <button class="btn btn-primary btn-sm" onclick="showMoveModal()">
+                                    <i class="bi bi-plus-lg me-1"></i> Nuevo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Descripción</th>
+                                        <th>Categoría</th>
+                                        <th class="text-end">Monto</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="user-moves-table">
+                                    <!-- JS dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="no-moves-msg" class="text-center py-5 d-none">
+                            <i class="bi bi-receipt text-muted display-4"></i>
+                            <p class="text-muted mt-2">No hay movimientos registrados.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="view-admin" class="view-section">
+            <div class="row mb-4 align-items-center">
+                <div class="col-md-6">
+                    <h2 class="fw-bold m-0 text-gradient">Panel de Administración</h2>
+                    <p class="text-muted">Control global de la salud financiera del sistema</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <button class="btn btn-success shadow-sm" onclick="exportAdminReport()">
+                        <i class="bi bi-file-earmark-excel me-2"></i>Exportar Reporte
+                    </button>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card-custom p-4 text-center border-bottom border-4 border-primary">
+                        <h6 class="text-muted mb-2">Usuarios Totales</h6>
+                        <h2 class="fw-bold mb-0" id="adm-total-users">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-custom p-4 text-center border-bottom border-4 border-info">
+                        <h6 class="text-muted mb-2">Liquidez Sistema</h6>
+                        <h2 class="fw-bold mb-0 text-primary" id="adm-system-balance">$0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-custom p-4 text-center border-bottom border-4 border-warning">
+                        <h6 class="text-muted mb-2">En Sobrepresupuesto</h6>
+                        <h2 class="fw-bold mb-0 text-warning" id="adm-over-budget">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card-custom p-4 text-center border-bottom border-4 border-success">
+                        <h6 class="text-muted mb-2">Flujo del Mes</h6>
+                        <h4 class="fw-bold mb-0 text-success" id="adm-monthly-flow">+$0</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card-custom p-4">
+                        <h5 class="fw-bold mb-4">Status de Usuarios</h5>
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Presupuesto</th>
+                                        <th>Gastado</th>
+                                        <th>Estado</th>
+                                        <th class="text-end">Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-users-table">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card-custom p-4 h-100">
+                        <h5 class="fw-bold mb-4">Distribución Global</h5>
+                        <div style="height: 300px;">
+                            <canvas id="adminChart"></canvas>
+                        </div>
+                        <div class="mt-4">
+                            <p class="small text-muted mb-1">Nota: Los administradores no pueden modificar datos personales de los usuarios.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALES -->
+
+    <!-- Modal Movimiento -->
+    <div class="modal fade" id="moveModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="moveModalTitle">Registrar Movimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-move">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Tipo de Movimiento</label>
+                                <div class="d-flex gap-2">
+                                    <input type="radio" class="btn-check" name="move-type" id="m-type-expense" value="expense" checked>
+                                    <label class="btn btn-outline-danger w-50" for="m-type-expense"><i class="bi bi-dash-circle me-1"></i> Gasto</label>
+                                    
+                                    <input type="radio" class="btn-check" name="move-type" id="m-type-income" value="income">
+                                    <label class="btn btn-outline-success w-50" for="m-type-income"><i class="bi bi-plus-circle me-1"></i> Ingreso</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Monto</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0 text-muted">$</span>
+                                    <input type="number" id="move-amount" class="form-control border-start-0 ps-0" required min="1" step="0.01" placeholder="0.00">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Categoría</label>
+                                <select id="move-cat" class="form-select" required>
+                                    <!-- Dinámico -->
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Descripción</label>
+                                <input type="text" id="move-desc" class="form-control" required placeholder="Ej: Pago de renta">
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-primary w-100 py-3 shadow">Guardar Registro</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Presupuesto -->
+    <div class="modal fade" id="budgetModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Ajustar Presupuesto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-budget">
+                        <label class="form-label">Nuevo Presupuesto Mensual</label>
+                        <div class="input-group mb-4">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="new-budget-val" class="form-control" required min="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 shadow">Actualizar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Categorías -->
+    <div class="modal fade" id="categoryModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Gestionar Categorías</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-cat-add" class="mb-4">
+                        <label class="form-label small fw-bold">Nueva Categoría</label>
+                        <div class="input-group">
+                            <input type="text" id="new-cat-name" class="form-control form-control-sm" placeholder="Ej: Entretenimiento" required>
+                            <button class="btn btn-primary btn-sm" type="submit">Agregar</button>
+                        </div>
+                    </form>
+                    
+                    <h6 class="fw-bold small mb-2 text-muted">Mis Categorías</h6>
+                    <div id="category-list-manage" class="list-group list-group-flush rounded-3 border">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
