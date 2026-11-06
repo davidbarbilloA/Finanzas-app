@@ -491,7 +491,7 @@ window.exportAdminReport = () => {
     const users = getLS(DB_KEY_USERS).filter(u => u.role !== 'admin');
     const allMoves = getLS(DB_KEY_MOVES);
     
-    let csv = 'Usuario,Presupuesto,Gastado,Balance,Estado\\n';
+    let csv = 'Usuario,Presupuesto,Gastado,Balance,Estado\n';
     
     users.forEach(u => {
         const uMoves = allMoves.filter(m => m.userId === u.id);
@@ -500,7 +500,7 @@ window.exportAdminReport = () => {
         const uBalance = uInc - uExp;
         const status = uExp > u.budget ? 'EXCESO' : 'OK';
         
-        csv += `${u.name},${u.budget},${uExp},${uBalance},${status}\\n`;
+        csv += `${u.name},${u.budget},${uExp},${uBalance},${status}\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv' });
